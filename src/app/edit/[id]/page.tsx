@@ -30,13 +30,11 @@ export default function editForm() {
   const [formName, setFormName] = useState("");
   const [description, setDescription] = useState("");
   async function getData() {
-    const formId = window.location.pathname.slice(11);
+    const formId = window.location.pathname.slice(6);
     console.log(formId);
     
     const res: any = await getForm(formId);
     if (res != "No data found") {
-      console.log(res);
-      
       const r: { questions: []; name: string; description: string } =
         JSON.parse(res);
       if (r.questions.length == 0) {
