@@ -33,6 +33,8 @@ export default function editForm() {
     const formId = window.location.pathname.slice(11);
     const res: any = await getForm(formId);
     if (res != "No data found") {
+      console.log(res);
+      
       const r: { questions: []; name: string; description: string } =
         JSON.parse(res);
       if (r.questions.length == 0) {
