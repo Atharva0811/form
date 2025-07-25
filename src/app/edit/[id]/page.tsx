@@ -31,8 +31,6 @@ export default function editForm() {
   const [description, setDescription] = useState("");
   async function getData() {
     const formId = window.location.pathname.slice(6);
-    console.log(formId);
-    
     const res: any = await getForm(formId);
     if (res != "No data found") {
       const r: { questions: []; name: string; description: string } =
@@ -50,7 +48,7 @@ export default function editForm() {
     }
   }
   async function saveForm() {
-    const formId = window.location.pathname.slice(11);
+    const formId = window.location.pathname.slice(6);
     const res: any = await updateForm(formId, formName, description, q);
     alert(res.message);
   }
