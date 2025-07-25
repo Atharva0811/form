@@ -31,6 +31,8 @@ export default function editForm() {
   const [description, setDescription] = useState("");
   async function getData() {
     const formId = window.location.pathname.slice(11);
+    console.log(formId);
+    
     const res: any = await getForm(formId);
     if (res != "No data found") {
       console.log(res);
