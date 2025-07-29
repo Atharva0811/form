@@ -29,7 +29,7 @@ export function middleware(request: NextRequest) {
   console.log(
     `Middleware: Unauthorized access attempt to ${pathname}. Redirecting to ${UNPROTECTED_PATHS[0]}`
   );
-  console.log(`cookie:accessed:${CORRECT_COOKIE_VALUE} and ${authToken}`);
+  console.log(`cookie:accessed:${CORRECT_COOKIE_VALUE} and ${authToken} and ${AUTH_COOKIE_NAME}`);
   
   return NextResponse.redirect(new URL(UNPROTECTED_PATHS[0], request.url));
 }
