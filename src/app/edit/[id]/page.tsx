@@ -8,7 +8,7 @@ const data = [
     question: "",
     type: "text",
     options: [""],
-    gridOptions:[],
+    gridOptions: [],
     required: false,
     purpose: "",
   },
@@ -132,6 +132,7 @@ export default function editForm() {
                 <option value="grid">Grid</option>
                 <option value="mcg">Multi Choice Grid</option>
               </select>
+              {/* radio and checkbox */}
               {(question.type == "radio" || question.type == "checkbox") && (
                 <div className="col-span-8 px-4 w-full flex flex-col space-y-4">
                   <h1 className="font-semibold">Options:</h1>
@@ -194,6 +195,231 @@ export default function editForm() {
                   </div>
                 </div>
               )}
+
+              {/* Grid and mcg */}
+              {(question.type === "grid" || question.type == "mcg") && (
+                <div className="col-span-8 p-4 w-full flex flex-col space-y-2">
+                  <h1 className="font-semibold">Grid Rows & Options:</h1>
+
+                  {question.gridOptions?.map((rowObject: any, rowIndex) => {
+                    const rowName = Object.keys(rowObject)[0];
+                    const rowOptions = rowObject[rowName];
+
+                    return (
+                      <div
+                        className="w-full flex flex-col space-y-4 pb-4 mb-4 "
+                        key={"gridRow" + rowIndex}
+                      >
+                        {/* Row Name Input */}
+                        <div className="flex items-center space-x-1">
+                          <span>{rowIndex+1}.</span>
+                          <input
+                            type="text"
+                            className="px-2 py-2 w-1/2 col-span-3 border-b border-slate-300 placeholder-slate-300 outline-none focus:bg-slate-100"
+                            name={`rowName-${rowIndex}`}
+                            id={`rowName-${rowIndex}`}
+                            value={rowName}
+                            placeholder={`Row ${rowIndex + 1} Name`}
+                            onChange={(e) => {
+                              const newQ = [...q];
+                              if (newQ[index].gridOptions) {
+                                const newGridOptions: any = [
+                                  ...newQ[index].gridOptions!,
+                                ];
+                                const oldRowName = Object.keys(
+                                  newGridOptions[rowIndex]
+                                )[0];
+                                const currentRowOptions =
+                                  newGridOptions[rowIndex][oldRowName];
+
+                                // Create a new row object with the updated key
+                                const updatedRowObject = {
+                                  [e.target.value]: currentRowOptions,
+                                };
+                                newGridOptions[rowIndex] = updatedRowObject;
+
+                                newQ[index] = {
+                                  ...newQ[index],
+                                  gridOptions: newGridOptions,
+                                };
+                                setQ(newQ);
+                              }
+                            }}
+                            required
+                          />
+                          {/* Remove Row Button */}
+                          <button
+                            className="rotate-45 text-3xl ml-auto font-light"
+                            onClick={() => {
+                              const newQ = [...q];
+                              if (newQ[index].gridOptions) {
+                                const newGridOptions = newQ[
+                                  index
+                                ].gridOptions?.filter(
+                                  (_, rIdx) => rIdx !== rowIndex
+                                );
+                                newQ[index] = {
+                                  ...newQ[index],
+                                  gridOptions: newGridOptions,
+                                };
+                                setQ(newQ);
+                              }
+                            }}
+                          >
+                            +
+                          </button>
+                        </div>
+
+                        {/* Row Options */}
+                        <div className="flex flex-col pl-6 space-y-2">
+                          <h3 className="text-sm font-medium text-slate-900">
+                            Row options:
+                          </h3>
+                          {rowOptions?.map(
+                            (
+                              opt:
+                                | string
+                                | number
+                                | readonly string[]
+                                | undefined,
+                              optIndex: number
+                            ) => (
+                              <div
+                                className="w-full flex items-center space-x-2"
+                                key={`rowOpt-${rowIndex}-${optIndex}`}
+                              >
+                                <input
+                                  type="text"
+                                  className="px-4 py-2 w-10/12 col-span-3 border-b border-slate-300 placeholder-slate-300 outline-none focus:bg-slate-100 text-sm"
+                                  name={`rowOption-${rowIndex}-${optIndex}`}
+                                  id={`rowOption-${rowIndex}-${optIndex}`}
+                                  value={opt}
+                                  placeholder={`Option ${optIndex + 1}`}
+                                  onChange={(e) => {
+                                    const newQ = [...q];
+                                    if (newQ[index].gridOptions) {
+                                      const newGridOptions = [
+                                        ...newQ[index].gridOptions!,
+                                      ];
+                                      const currentRowObject: any = {
+                                        ...newGridOptions[rowIndex],
+                                      };
+                                      const currentRowName =
+                                        Object.keys(currentRowObject)[0];
+                                      const newRowOptions = [
+                                        ...currentRowObject[currentRowName],
+                                      ];
+                                      newRowOptions[optIndex] = e.target.value;
+
+                                      currentRowObject[currentRowName] =
+                                        newRowOptions;
+                                      newGridOptions[rowIndex] =
+                                        currentRowObject;
+
+                                      newQ[index] = {
+                                        ...newQ[index],
+                                        gridOptions: newGridOptions,
+                                      };
+                                      setQ(newQ);
+                                    }
+                                  }}
+                                  required
+                                />
+                                {/* Remove Option Button */}
+                                <button
+                                  className="rotate-45 text-xl font-light"
+                                  onClick={() => {
+                                    const newQ = [...q];
+                                    if (newQ[index].gridOptions) {
+                                      const newGridOptions = [
+                                        ...newQ[index].gridOptions!,
+                                      ];
+                                      const currentRowObject: any = {
+                                        ...newGridOptions[rowIndex],
+                                      };
+                                      const currentRowName =
+                                        Object.keys(currentRowObject)[0];
+                                      const newRowOptions = currentRowObject[
+                                        currentRowName
+                                      ].filter(
+                                        (_: any, oIdx: any) => oIdx !== optIndex
+                                      );
+
+                                      currentRowObject[currentRowName] =
+                                        newRowOptions;
+                                      newGridOptions[rowIndex] =
+                                        currentRowObject;
+
+                                      newQ[index] = {
+                                        ...newQ[index],
+                                        gridOptions: newGridOptions,
+                                      };
+                                      setQ(newQ);
+                                    }
+                                  }}
+                                >
+                                  +
+                                </button>
+                              </div>
+                            )
+                          )}
+                          {/* Add Option Button for current row */}
+                          <div className="flex flex-col items-center justify-end pr-8">
+                            <button
+                              className="text-slate-300 hover:text-slate-500 font-light hover:scale-110 duration-200 text-base border rounded-full px-2"
+                              onClick={() => {
+                                const newQ = [...q];
+                                if (newQ[index].gridOptions) {
+                                  const newGridOptions = [
+                                    ...newQ[index].gridOptions!,
+                                  ];
+                                  const currentRowObject: any = {
+                                    ...newGridOptions[rowIndex],
+                                  };
+                                  const currentRowName =
+                                    Object.keys(currentRowObject)[0];
+                                  const newRowOptions = [
+                                    ...currentRowObject[currentRowName],
+                                    "",
+                                  ];
+
+                                  currentRowObject[currentRowName] =
+                                    newRowOptions;
+                                  newGridOptions[rowIndex] = currentRowObject;
+
+                                  newQ[index] = {
+                                    ...newQ[index],
+                                    gridOptions: newGridOptions,
+                                  };
+                                  setQ(newQ);
+                                }
+                              }}
+                            >
+                              +
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                  {/* Add Row Button for the entire grid */}
+                  <div className="flex mr-auto mx-8 mt-4">
+                    <button
+                      className="mx-auto text-slate-900 duration-200 text-md border rounded-md px-4 py-1"
+                      onClick={() => {
+                        const newQ = [...q];
+                        if (newQ[index].gridOptions) {
+                          newQ[index].gridOptions?.push({ "": [""] }); // Add a new row with a default name and one empty option
+                          setQ(newQ);
+                        }
+                      }}
+                    >
+                      + Add Grid Row
+                    </button>
+                  </div>
+                </div>
+              )}
+
               <input
                 type="text"
                 name={`purpose${index + 1}`}
@@ -256,7 +482,7 @@ export default function editForm() {
                 required: false,
                 type: "text",
                 options: [""],
-                gridOptions:[],
+                gridOptions: [],
                 purpose: "",
               },
             ]);
