@@ -20,7 +20,8 @@ export async function middleware(request: NextRequest) {
   }
 
   const authToken = cookie.get(AUTH_COOKIE_NAME);
-
+  console.log(cookie.getAll("ITAT"));
+  
   if (authToken && authToken.value === CORRECT_COOKIE_VALUE) {
     return NextResponse.next();
   }
