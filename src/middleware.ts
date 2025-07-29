@@ -20,17 +20,13 @@ export async function middleware(request: NextRequest) {
   }
 
   const authToken = cookie.get(AUTH_COOKIE_NAME);
-  console.log(cookie.getAll("ITAT"));
-  
+
   if (authToken && authToken.value === CORRECT_COOKIE_VALUE) {
     return NextResponse.next();
   }
 
   console.log(
     `Middleware: Unauthorized access attempt to ${pathname}. Redirecting to ${UNPROTECTED_PATHS[0]}`
-  );
-  console.log(
-    `cookie:accessed:${CORRECT_COOKIE_VALUE} and ${authToken} and ${AUTH_COOKIE_NAME}`
   );
 
   return NextResponse.redirect(new URL(UNPROTECTED_PATHS[0], request.url));
