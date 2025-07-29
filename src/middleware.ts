@@ -29,6 +29,8 @@ export function middleware(request: NextRequest) {
   console.log(
     `Middleware: Unauthorized access attempt to ${pathname}. Redirecting to ${UNPROTECTED_PATHS[0]}`
   );
+  console.log(`cookie:accessed:${CORRECT_COOKIE_VALUE} and ${authToken}`);
+  
   return NextResponse.redirect(new URL(UNPROTECTED_PATHS[0], request.url));
 }
 
